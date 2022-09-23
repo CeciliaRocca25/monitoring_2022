@@ -1,11 +1,9 @@
 library(raster)
 library(RStoolbox) # classification
-install.packages("ggplot2")
 library(ggplot2)
-install.packages("gridExtra")
 library(gridExtra) # for grid.arrange plotting
 
-("C:/lab/")
+setwd("C:/lab/")
 
 #list the files available
 rlist<-list.files(pattern="defor")
@@ -30,49 +28,74 @@ l1992c <- unsuperClass(l1992, nClasses=2)
 l1992c
 # class 1: forest
 # class 2: agriculture
+# with the classification we pass from a brick to a raster
 
-# set.seed() would allow you to attain the same results ...
+plot(l1992c$map)
+# value 1: agricultural land
+# value 2: forest
 
-d2c <- unsuperClass(defor2, nClasses=2)
-plot(d2c$map)
-# class 1: agriculture
-# class 2: forest
+# calculate the frequency of data
+freq(l1992c$map)
+# value  count
+# [1,]     1  33287
+# [2,]     2 308005
 
-d2c3 <- unsuperClass(defor2, nClasses=3)
-plot(d2c3$map)
+# agricultural land (class 1) = 33287
+# forest (class 2) = 308005
 
-# frequencies
-freq(d1c$map)
-#   value  count
-# [1,]     1 306583
-# [2,]     2  34709
+total <- (33287 + 308005)
+total
+propagri <- 33287/total
+propforest <- 308005/total
+propagri
+# [1] 0.09753232
+propforest
+# [1] 0.9024677
 
-s1 <- 306583 + 34709
-
-prop1 <- freq(d1c$map) / s1
-# prop forest: 0.8983012
-# prop agriculture: 0.1016988
-
-s2 <- 342726
-prop2 <- freq(d2c$map) / s2
-# prop forest: 0.5206958
-# prop agriculture: 0.4793042
 
 # build a dataframe
-cover <- c("Forest","Agriculture")
-percent_1992 <- c(89.83, 10.16)
-percent_2006 <- c(52.06, 47.93)
+cover <- c("Agriculture","Forest")
+prop1992 <- c(propagri, propforest)
 
-percentages <- data.frame(cover, percent_1992, percent_2006)
-percentages
+proportion1992 <- data.frame(cover, prop1992)
+proportion1992
 
 # let's plot them!
-ggplot(percentages, aes(x=cover, y=percent_1992, color=cover)) + geom_bar(stat="identity", fill="white")
-ggplot(percentages, aes(x=cover, y=percent_2006, color=cover)) + geom_bar(stat="identity", fill="white")
+ggplot(proportion1992, aes(x=cover, y=prop1992, color=cover)) + geom_bar(stat="identity", fill="white") + ylim(0,1)
 
-p1 <- ggplot(percentages, aes(x=cover, y=percent_1992, color=cover)) + geom_bar(stat="identity", fill="white")
-p2 <- ggplot(percentages, aes(x=cover, y=percent_2006, color=cover)) + geom_bar(stat="identity", fill="white")
+#let's do the same for 2006
+l2006c <- unsuperClass(l1992, nClasses=2)
+l2006c
+# class 1: forest
+# class 2: agriculture
 
-grid.arrange(p1, p2, nrow=1)
+plot(l2006$map)
+# value 1: forest
+# value 2: agriculture
 
-# + ylim(0,100)
+# calculate the frequency of data
+freq(l2006c$map)
+#value  count
+# [1,]     1 178715
+# [2,]     2 164011
+
+propagri2006 <- 164011/total
+propforest2006 <- 178715/total
+
+# build a dataframe
+cover <- c("Agriculture","Forest")
+prop1992 <- c(propagri, propforest)
+prop2006 <- c(propagri2006, propforest2006)
+
+proportion <- data.frame(cover, prop1992, prop2006)
+
+proportion
+
+ggplot(proportion , aes(x=cover, y=prop2006, color=cover)) + geom_bar(stat="identity", fill="white") + ylim(0,1)
+
+p1 <- ggplot(proportion1992, aes(x=cover, y=prop1992, color=cover)) + geom_bar(stat="identity", fill="white")
+p2 <- ggplot(proportion , aes(x=cover, y=prop2006, color=cover)) + geom_bar(stat="identity", fill="white")
+
+# let's put several plots in the same grid
+grid.arrange(p1, p2, nrows=1)
+
