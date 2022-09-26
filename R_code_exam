@@ -1,0 +1,27 @@
+library(ncdf4)
+library(raster)
+library(RStoolbox)
+library(viridis)
+library(ggplot2)
+library(patchwork)
+setwd("C:/lab/proj")
+
+fapar202209 <- raster("c_gls_FAPAR-RT0_202006300000_GLOBE_PROBAV_V2.0.1.nc")
+plot(fapar202209)
+
+file <- system.file("pt_1km.shp")
+fire2022 <- raster("c_gls_BA300_202107010000_GLOBE_S3_V3.0.1.nc")
+
+ext <- c(2.5, 4.7, 6.1, 7.9)
+crop_ndvi <- crop(ndvi, ext)
+plot(crop_ndvi, col=cl)
+
+ggplot() + 
+geom_raster(crop_ndvi, mapping = aes(x=x, y=y, fill=Normalized.Difference.Vegetation.Index.1KM)) +
+scale_fill_viridis(option="viridis") +
+ggtitle("NDVI Nigeria 1999")
+ndvi2020<- raster("c_gls_NDVI_202004210000_GLOBE_PROBAV_V2.2.1.nc")
+par(mfrow=c(1,2))
+ndvi_diff<-ndvi-ndvi1999
+
+CO2000 <- brick("CO_2000.jpg")
