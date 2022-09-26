@@ -86,7 +86,9 @@
  datasdm <- sdmData(train=species, predictors=preds)
 
  # model
- m1 <- sdm(Occurrence ~ elevation + precipitation + temperature + vegetation, data=datasdm, methods = "glm")
+ # Occurrence is the variable on the Y axis, precipitation on the X
+ # glm: generalized linear model, it assumes all the variables have a normal distribution
+ m1 <- sdm(Occurrence ~ elevation + precipitation + temperature + vegetation, data=datasdm, methods = "glm") 
 
  # make the raster output layer
  p1 <- predict(m1, newdata=preds) 
@@ -99,4 +101,6 @@
  s1 <- stack(preds,p1)
  plot(s1, col=cl)
 
-
+ # change the names of the graphs
+ names(s1) <- c('elevation', 'precipitation', 'temperature', 'vegetation', 'model')
+ plot(s1, col=cl)
