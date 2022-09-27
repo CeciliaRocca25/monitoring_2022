@@ -1,12 +1,11 @@
 # R code for ecosystem monitoring by remote sensing
 # we need to install raster package to manage image data
-# https://cran.r-project.org/web/packages/raster/index.html
 
 install.packages("raster")
 install.packages("rgdal)
 library(raster)
 library(rgdal)
-#import image
+# import image
 l2006 <- brick("p224r63_2011")
 # R code for estimating energy in ecosystems
 library(raster)
