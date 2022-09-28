@@ -2,10 +2,11 @@
 library(raster)
 library(RStoolbox)
 library(ggplot2)
+library(latticeExtra)
 
 setwd("C:/lab/proj")
 
-# monitoring the urban growth in the area of Lagos, Nigeria
+# monitoring the environmental changes in the area of Lagos, Nigeria
 
 # we import the table with monthly mean T and precipitation in Nigeria for the decade 1991-2020
 mean_monthly_climate <- read.table("_b_monthly-climatology-1991-2020__b_.csv", head=T, sep=",")
@@ -30,13 +31,34 @@ mtext("Precipitation (mm)", side = 2, las=3, line=3, col="darkslategray3")
 par(new=TRUE) #allows multiple plots in the same chart
 
 #we build the line plot with no axes
-plot(temp, pch=16,  xlab="", ylab="", ylim=c(24,32), 
+plot(temp, pch=16,  xlab="", ylab="", las=3, ylim=c(20,32), 
     axes=FALSE, type="b", col="darkred")
 
 # we buld the y axes on the right
 axis(4, ylim=c(24,36), col="black",col.axis="black",las=1)  
 mtext("Temperature (C°)",side=4,col="darkred",line=-1.4) 
 
+
+# we import a table with the population data of Nigeria 1960-2021
+nig_population <- read.table("nigeria-population-2022-09-27.csv", head=T, sep=",")
+Year <- nig_population$date
+Pop <- nig_population$Population
+Urban_pop <- nig_population$Urban_Population
+Perc <- nig_population$Perc_of_total
+
+ggplot(data_summary, aes(x = factor(Temp), y = mean, fill = Glass, colour = Glass)) + 
+  geom_bar(stat = "identity", position = "dodge")
+
+# we plot the population growth and the urban population growth
+p1<- barplot(height=Pop, names=Year, xlab="Year", ylab="People (M)", las=1, ylim=c(0, 220),
+     col="darkgreen",border="darkgreen", main="Population evolution in Nigeria 1960-2021")
+lines(Urban_pop~Year, col="darkmagenta", type="l")
+legend("topleft", legend = c("Total population", "Urban population"), col= c("darkgreen", "darkmagenta"),
+       lty = c(1,1), bty = "n", pt.cex = 2, cex = 0.8,
+       text.col = "black")
+
+# we plot the evolution of the percentage of urban population
+p2<- plot(
 
 # we import a table with the population of the Lagos state in the years 2006-2016
 nig_pop<-read.table("ObservationData_gfvytff_mod.csv", fill=TRUE, head=T, sep=",")
