@@ -1,16 +1,74 @@
 
 library(raster)
 library(RStoolbox)
+library(ggplot2)
 
 setwd("C:/lab/proj")
 
 # monitoring the urban growth in the area of Lagos, Nigeria
 
+# we import the table with monthly mean T and precipitation in Nigeria for the decade 1991-2020
+mean_monthly_climate <- read.table("_b_monthly-climatology-1991-2020__b_.csv", head=T, sep=",")
+mean_monthly_climate
+
+# create separate datasets for T and precipitation
+temp <- mean_monthly_climate$Mean_T
+prec <- mean_monthly_climate$Precipitation
+Month <- mean_monthly_climate$Month
+T <- data.frame(Month, temp)
+P <- data.frame(Month, prec)
+
+#we create two overlaying graphs to show the mean monthly precipitation and temperature in Nigeria
+#we build the barplot
+barplot(height=prec, names=Month,
+        col="darkslategray3", border="lightblue",
+        xlab="Month", ylab="", las=1,
+        main="Mean monthly climate in Nigeria 2001-2020", 
+        ylim=c(0,250))
+mtext("Precipitation (mm)", side = 2, las=3, line=3, col="darkslategray3")
+
+par(new=TRUE) #allows multiple plots in the same chart
+
+#we build the line plot with no axes
+plot(temp, pch=16,  xlab="", ylab="", ylim=c(24,32), 
+    axes=FALSE, type="b", col="darkred")
+
+# we buld the y axes on the right
+axis(4, ylim=c(24,36), col="black",col.axis="black",las=1)  
+mtext("Temperature (C°)",side=4,col="darkred",line=-1.4) 
+
+
+# we import a table with the population of the Lagos state in the years 2006-2016
+nig_pop<-read.table("ObservationData_gfvytff_mod.csv", fill=TRUE, head=T, sep=",")
+nig_pop
+#    Date    Value
+# 1  2006  9113605
+# 2  2007  9409957
+# 3  2008  9715945
+# 4  2009 10031883
+# 5  2010 10358095
+# 6  2011 10694915
+# 7  2012 11042686
+# 8  2013 11401767
+# 9  2014 11772524
+# 10 2015 12155337
+# 11 2016 12550598
+
+Years<-nig_pop$Date
+Population<-nig_pop$Value
+
+# we plot the table
+ggplot(data=nig_pop, aes(x=Years, y=Population))+
+geom_line(color="#F8766D", size=2, alpha=0.7, linetype="solid")+
+geom_point(color="#F8766D", size=3, alpha=6)+
+ggtitle("Population growth in the state of Lagos") # there has been an almost linear growth in the decade 2006-2016
+
+
 # we import the raster data of global NDVI in april 1999 and 2020
 ndvi_1999 <- raster("c_gls_NDVI_199904210000_GLOBE_VGT_V2.2.1.nc")
 ndvi_2020 <- raster("c_gls_NDVI_202004210000_GLOBE_PROBAV_V2.2.1.nc")
 
-# we crop the data around the area of Lagos, Nigeria
+# we crop the data around the area of Lagos
 ext <- c(2.5, 4.7, 6.1, 7.9)
 ndvi_1999_nig <- crop(ndvi_1999, ext)
 ndvi_2020_nig <- crop(ndvi_2020, ext)
@@ -30,8 +88,6 @@ ndvi_diff <- ndvi_1999_nig - ndvi_2020_nig
 cl1 <- colorRampPalette(c("blue", "white", "red"))(100)
 plot(ndvi_diff, col=cl1, main="Difference in NDVI between 1999 and 2020")
 
-nig_cover<-brick("WorldCover Viewer-image")
-plotRGB(nig_cover,  r=1, g=2, b=3, stretch="lin")
 
 # unsupervised classification
 nig_class <- unsuperClass(nig_cover, nClasses=2)
@@ -46,31 +102,7 @@ ggtitle("Population of Nigeria 2020")
 
 
 
-# we import a table with the population of the Lagos state in the years 2006-2016
-nig_pop<-read.table("ObservationData_gfvytff_mod.csv", fill=TRUE, head=T, sep=",")
-nig_pop
-#    Date    Value
-# 1  2006  9113605
-# 2  2007  9409957
-# 3  2008  9715945
-# 4  2009 10031883
-# 5  2010 10358095
-# 6  2011 10694915
-# 7  2012 11042686
-# 8  2013 11401767
-# 9  2014 11772524
-# 10 2015 12155337
-# 11 2016 12550598
 
-
-Years<-nig_pop$Date
-Population<-nig_pop$Value
-
-# we plot the table
-ggplot(data=nig_pop, aes(x=Years, y=Population))+
-geom_line(color="#F8766D", size=2, alpha=0.7, linetype="solid")+
-geom_point(color="#F8766D", size=3, alpha=6)+
-ggtitle("Population growth in the state of Lagos") # there has been an almost linear growth in the decade 2006-2016
 
 
 mean_t_lagos<-read.table("tas_timeseries_annual_cru_1901-2021_NGA.csv", fill=TRUE, head=T, sep=",")
