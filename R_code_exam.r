@@ -2,7 +2,7 @@
 library(raster)
 library(RStoolbox)
 library(ggplot2)
-library(latticeExtra)
+
 
 setwd("C:/lab/proj")
 
@@ -46,16 +46,36 @@ Pop <- nig_population$Population
 Urban_pop <- nig_population$Urban_Population
 Perc <- nig_population$Perc_of_total
 
-ggplot(data_summary, aes(x = factor(Temp), y = mean, fill = Glass, colour = Glass)) + 
-  geom_bar(stat = "identity", position = "dodge")
-
+par(mfrow(c(1, 2)))
 # we plot the population growth and the urban population growth
-p1<- barplot(height=Pop, names=Year, xlab="Year", ylab="People (M)", las=1, ylim=c(0, 220),
-     col="darkgreen",border="darkgreen", main="Population evolution in Nigeria 1960-2021")
-lines(Urban_pop~Year, col="darkmagenta", type="l")
-legend("topleft", legend = c("Total population", "Urban population"), col= c("darkgreen", "darkmagenta"),
-       lty = c(1,1), bty = "n", pt.cex = 2, cex = 0.8,
-       text.col = "black")
+ggplot(nig_population, aes(x=Year, y=Perc)) +
+  geom_area( fill="blue", alpha=0.3)+
+geom_line(color="blue", size=1.6)+
+geom_point(size=2.2, color="blue")+
+ylab("Percentage %")+xlab("Year")+ylim(0,80)
+
+
+p1<- ggplot(data=nig_population, aes(x=Year) +
+  geom_bar(aes(y=Pop), stat="identity", position ="identity", alpha=0.3, col="darkgreen", fill="darkgreen") +
+  geom_bar(aes(y=Urban_pop), stat="identity", position="identity", alpha=.8, col="red", fill="pink")+
+        xlab("Year")+ ylab("People (M)")+
+        theme(axis.text=element_text(angle=0, color="black"))+
+        geom_label(
+    label="Total population", 
+    x=1970,
+    y=200,
+    label.padding = unit(0.55, "lines"),
+    label.size = 0.35,
+    color = "darkgreen",
+    fill="#CCFFCC", alpha=0.3)+
+        geom_label(
+                label="Urban population", 
+    x=1970,
+    y=175,
+    label.padding = unit(0.55, "lines"),
+    label.size = 0.35,
+    color = "red",
+    fill="pink", alpha=0.3)
 
 # we plot the evolution of the percentage of urban population
 p2<- plot(
@@ -111,21 +131,6 @@ cl1 <- colorRampPalette(c("blue", "white", "red"))(100)
 plot(ndvi_diff, col=cl1, main="Difference in NDVI between 1999 and 2020")
 
 
-# unsupervised classification
-nig_class <- unsuperClass(nig_cover, nClasses=2)
-nig_class
-# 1 0.6522753
-# 2 0.9206111
-
-ggplot()+
-geom_point(data=pop_nig, aes(x=longitude, y=latitude, size=nga_general_2020),col="darkred",alpha=0.7)+
-scale_size_continuous(range = c(1, 8), name="People")+ 
-ggtitle("Population of Nigeria 2020")
 
 
 
-
-
-
-mean_t_lagos<-read.table("tas_timeseries_annual_cru_1901-2021_NGA.csv", fill=TRUE, head=T, sep=",")
-mean_t_lagos
