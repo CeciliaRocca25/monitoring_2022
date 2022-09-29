@@ -227,3 +227,14 @@ ggtitle("2022 colder-warmer areas proportion")
 
 grid.arrange(grobs=list(pl1, pl2, pl3), ncol=3)
 
+#import table with sea level anomalies
+sea_level_anomaly<-read.table("historical-sea-level-for-coastal-nigeria_2.csv", head=T, sep=",")
+Detect<-sea_level_anomaly$Date
+Monthly<-sea_level_anomaly$Average_Monthly_Anomaly
+
+#plot data with a regression line
+plot(Detect, Monthly, main = "Sea level anomalies 1993-2022",
+     xlab = "Sea level detections 1993-2022 (one per month)", ylab = "Anomalies (mm)",
+     xlim=c(0, 300), ylim=c(-100, 200),
+     pch = 20, cex=0.5, frame=FALSE, col="darkblue")
+lines(lowess(Detect, Monthly), col = "pink", cex=1.5)
