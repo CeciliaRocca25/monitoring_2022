@@ -201,6 +201,7 @@ proportion <- data.frame(temp, p_2001, p_2010, p_2022)
 pl1<-ggplot(data=proportion, aes(x=temp, y=p_2001)) +
   geom_bar(aes(y=p_2001, fill=temp),stat="identity", position="identity")+
   scale_fill_manual(values = c("lightblue", "orange")) +
+ylim(0,0.8)+
 ylab(" ")+
 xlab(" ")+
   theme(legend.position="none")+
@@ -209,6 +210,7 @@ ggtitle("2001 colder-warmer areas proportion")
 pl2<-ggplot(data=proportion, aes(x=temp, y=p_2010)) +
   geom_bar(aes(y=p_2010, fill=temp),stat="identity", position="identity")+
   scale_fill_manual(values = c("lightblue", "orange")) +
+ylim(0,0.8)+
 ylab(" ")+
 xlab(" ")+
   theme(legend.position="none")+
@@ -217,6 +219,7 @@ ggtitle("2010 colder-warmer areas proportion")
 pl3<-ggplot(data=proportion, aes(x=temp, y=p_2022)) +
   geom_bar(aes(y=p_2022, fill=temp),stat="identity", position="identity")+
   scale_fill_manual(values = c("lightblue", "orange")) +
+ylim(0,0.8)+
 ylab(" ")+
 xlab(" ")+
   theme(legend.position="none")+
