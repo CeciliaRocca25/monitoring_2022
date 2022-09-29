@@ -118,7 +118,7 @@ lst_apr22_nig_df<-as.data.frame(lst_apr22_nig, xy=T)
 lst_mar22_nig_df<-as.data.frame(lst_mar22_nig, xy=T)
 
 
-ggplot()+
+p1<-ggplot()+
 geom_tile(data=lst_apr01_nig_df, aes(x=x, y=y, fill=lst_apri2001))+
 scale_fill_gradient(low="yellow", high="blue")+
 theme(legend.position="none")+
@@ -135,13 +135,16 @@ xlab(" ")+
 ylab(" ")
 
 
-pp<-ggplot()+
+p3<-ggplot()+
 geom_tile(data=lst_mar22_nig_df, aes(x=x, y=y, fill=lst_mar2022))+
 scale_fill_gradient(low="yellow", high="blue")+
 theme(legend.position="none")+
 ggtitle("Land surface T (day) in march, 2022")+
 xlab(" ")+
 ylab(" ")
+
+# arrange them in one line
+grid.arrange(grobs=list(p1, p2, p3), ncol=3)
 
 lst_apr01_class <- unsuperClass(lst_apr01_nig, nClasses=2)
 lst_apr01_class
@@ -179,10 +182,40 @@ cold_a_22 <- 11031/total
 warm_a_22 <- 8169/total
 
 #build a dataframe
-temp <- ("Cold", "Warm")
-prop01 <- (cold_a_01, warm_a_01)
-prop10 <- (cold_a_10, warm_a_10)
-prop22 <- (cold_a_22, warm_a_22)
+temp <- c("Cold", "Warm")
+p_2001 <- c(cold_a_01, warm_a_01)
+p_2010 <- c(cold_a_10, warm_a_10)
+p_2022 <- c(cold_a_22, warm_a_22) 
+
+proportion <- data.frame(temp, p_2001, p_2010, p_2022)
+
+#plot the results
+pl1<-ggplot(data=proportion, aes(x=temp, y=p_2001)) +
+  geom_bar(aes(y=p_2001, fill=temp),stat="identity", position="identity")+
+  scale_fill_manual(values = c("lightblue", "orange")) +
+ylab(" ")+
+xlab(" ")+
+  theme(legend.position="none")+
+ggtitle("2001 colder-warmer areas proportion")
+
+pl2<-ggplot(data=proportion, aes(x=temp, y=p_2010)) +
+  geom_bar(aes(y=p_2010, fill=temp),stat="identity", position="identity")+
+  scale_fill_manual(values = c("lightblue", "orange")) +
+ylab(" ")+
+xlab(" ")+
+  theme(legend.position="none")+
+ggtitle("2010 colder-warmer areas proportion")
+
+pl3<-ggplot(data=proportion, aes(x=temp, y=p_2022)) +
+  geom_bar(aes(y=p_2022, fill=temp),stat="identity", position="identity")+
+  scale_fill_manual(values = c("lightblue", "orange")) +
+ylab(" ")+
+xlab(" ")+
+  theme(legend.position="none")+
+ggtitle("2022 colder-warmer areas proportion")
+
+grid.arrange(grobs=list(pl1, pl2, pl3), ncol=3)
+
 
 
 
