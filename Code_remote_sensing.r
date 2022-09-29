@@ -2,7 +2,7 @@
 # we need to install raster package to manage image data
 
 install.packages("raster")
-install.packages("rgdal)
+install.packages("rgdal")
 library(raster)
 library(rgdal)
 # import image
