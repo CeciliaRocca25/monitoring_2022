@@ -22,21 +22,23 @@ P <- data.frame(Month, prec)
 #we create two overlaying graphs to show the mean monthly precipitation and temperature in Nigeria
 #we build the barplot
 barplot(height=prec, names=Month,
-        col="darkslategray3", border="lightblue",
-        xlab="Month", ylab="", las=1,
-        main="Mean monthly climate in Nigeria 2001-2020", 
-        ylim=c(0,250))
-mtext("Precipitation (mm)", side = 2, las=3, line=3, col="darkslategray3")
+     col="darkslategray3", border="lightblue",
+     xlab="Month", ylab="", las=1,
+     main="Mean monthly climate in Nigeria 2001-2020", 
+     ylim=c(0,250))
+mtext("Precipitation (mm)", side = 2, las=3, line=3, col="#009999")
 
 par(new=TRUE) #allows multiple plots in the same chart
 
 #we build the line plot with no axes
-plot(temp, pch=16,  xlab="", ylab="", las=3, ylim=c(20,32), 
-    axes=FALSE, type="b", col="darkred")
+plot(temp, pch=16,  xlab="", ylab="", las=3, ylim=c(14,36), 
+    axes=FALSE, type="b", col="#FF6600")
 
 # we buld the y axes on the right
-axis(4, ylim=c(24,36), col="black",col.axis="black",las=1)  
-mtext("Temperature (C°)",side=4,col="darkred",line=-1.4) 
+axis(4, ylim=c(14,36), col="black",col.axis="black",las=1)  
+mtext("Temperature (C°)",side=4,col="#FF6600",line=-1.4) 
+ ggsave("mean_month_climate.jpg")
+
 
 
 # we import a table with the population data of Nigeria 1960-2021
@@ -46,64 +48,35 @@ Pop <- nig_population$Population
 Urban_pop <- nig_population$Urban_Population
 Perc <- nig_population$Perc_of_total
 
-par(mfrow(c(1, 2)))
+
 # we plot the population growth and the urban population growth
-ggplot(nig_population, aes(x=Year, y=Perc)) +
-  geom_area( fill="blue", alpha=0.3)+
-geom_line(color="blue", size=1.6)+
-geom_point(size=2.2, color="blue")+
-ylab("Percentage %")+xlab("Year")+ylim(0,80)
-
-
-p1<- ggplot(data=nig_population, aes(x=Year) +
+ggplot(data=nig_population, aes(x=Year)) +
   geom_bar(aes(y=Pop), stat="identity", position ="identity", alpha=0.3, col="darkgreen", fill="darkgreen") +
-  geom_bar(aes(y=Urban_pop), stat="identity", position="identity", alpha=.8, col="red", fill="pink")+
+  geom_bar(aes(y=Urban_pop), stat="identity", position="identity", alpha=0.8, col="red", fill="pink")+
         xlab("Year")+ ylab("People (M)")+
-        theme(axis.text=element_text(angle=0, color="black"))+
-        geom_label(
-    label="Total population", 
-    x=1970,
-    y=200,
-    label.padding = unit(0.55, "lines"),
-    label.size = 0.35,
-    color = "darkgreen",
-    fill="#CCFFCC", alpha=0.3)+
-        geom_label(
-                label="Urban population", 
-    x=1970,
-    y=175,
-    label.padding = unit(0.55, "lines"),
-    label.size = 0.35,
-    color = "red",
-    fill="pink", alpha=0.3)
+  geom_label(label="Total population", 
+        x=1970, y=200,
+        label.padding = unit(0.55, "lines"),
+        label.size = 0.35,
+        color = "darkgreen",
+        fill="#CCFFCC", alpha=0.3)+
+  geom_label(label="Urban population", 
+        x=1970, y=175,
+        label.padding = unit(0.55, "lines"),
+        label.size = 0.35,
+        color = "red",
+        fill="pink")
+       ggsave("pop_urb_growth.jpg")
+
 
 # we plot the evolution of the percentage of urban population
-p2<- plot(
-
-# we import a table with the population of the Lagos state in the years 2006-2016
-nig_pop<-read.table("ObservationData_gfvytff_mod.csv", fill=TRUE, head=T, sep=",")
-nig_pop
-#    Date    Value
-# 1  2006  9113605
-# 2  2007  9409957
-# 3  2008  9715945
-# 4  2009 10031883
-# 5  2010 10358095
-# 6  2011 10694915
-# 7  2012 11042686
-# 8  2013 11401767
-# 9  2014 11772524
-# 10 2015 12155337
-# 11 2016 12550598
-
-Years<-nig_pop$Date
-Population<-nig_pop$Value
-
-# we plot the table
-ggplot(data=nig_pop, aes(x=Years, y=Population))+
-geom_line(color="#F8766D", size=2, alpha=0.7, linetype="solid")+
-geom_point(color="#F8766D", size=3, alpha=6)+
-ggtitle("Population growth in the state of Lagos") # there has been an almost linear growth in the decade 2006-2016
+ggplot(nig_population, aes(x=Year, y=Perc)) +
+  geom_area( fill="darkmagenta", alpha=0.3)+
+  geom_line(color="darkmagenta", size=1.3)+
+  geom_point(size=1.8, color="darkmagenta")+
+  ylab("Percentage %")+xlab("Year")+ylim(0,80)+
+ggtitle("Percentage of urban population 1960-2021")
+ggsave("urb_pop_perc.jpg")
 
 
 # we import the raster data of global NDVI in april 1999 and 2020
