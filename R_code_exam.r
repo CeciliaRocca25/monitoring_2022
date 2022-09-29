@@ -16,8 +16,6 @@ mean_monthly_climate
 temp <- mean_monthly_climate$Mean_T
 prec <- mean_monthly_climate$Precipitation
 Month <- mean_monthly_climate$Month
-T <- data.frame(Month, temp)
-P <- data.frame(Month, prec)
 
 #we create two overlaying graphs to show the mean monthly precipitation and temperature in Nigeria
 #we build the barplot
@@ -103,7 +101,91 @@ ndvi_diff <- ndvi_1999_nig - ndvi_2020_nig
 cl1 <- colorRampPalette(c("blue", "white", "red"))(100)
 plot(ndvi_diff, col=cl1, main="Difference in NDVI between 1999 and 2020")
 
+lst_apr01<-raster("lst_apri2001.TIFF")
+lst_apr10<-raster("lst_apri2010.TIFF")
+lst_apr22<-raster("lst_apri2022.TIFF")
+lst_mar22<-raster("lst_mar2022.TIFF")
+
+ext<- c(0, 16, 3.5, 15.5)
+lst_apr01_nig<-crop(lst_apr01, ext)
+lst_apr10_nig<-crop(lst_apr10, ext)
+lst_apr22_nig<-crop(lst_apr22, ext)
+lst_mar22_nig<-crop(lst_mar22, ext)
+
+lst_apr01_nig_df<-as.data.frame(lst_apr01_nig, xy=T)
+lst_apr10_nig_df<-as.data.frame(lst_apr10_nig, xy=T)
+lst_apr22_nig_df<-as.data.frame(lst_apr22_nig, xy=T)
+lst_mar22_nig_df<-as.data.frame(lst_mar22_nig, xy=T)
 
 
+ggplot()+
+geom_tile(data=lst_apr01_nig_df, aes(x=x, y=y, fill=lst_apri2001))+
+scale_fill_gradient(low="yellow", high="blue")+
+theme(legend.position="none")+
+ggtitle("Land surface T (day) in april, 2001")+
+xlab(" ")+
+ylab(" ")
+
+p2<-ggplot()+
+geom_tile(data=lst_apr10_nig_df, aes(x=x, y=y, fill=lst_apri2010))+
+scale_fill_gradient(low="yellow", high="blue")+
+theme(legend.position="none")+
+ggtitle("Land surface T (day) in april, 2010")+
+xlab(" ")+
+ylab(" ")
+
+
+pp<-ggplot()+
+geom_tile(data=lst_mar22_nig_df, aes(x=x, y=y, fill=lst_mar2022))+
+scale_fill_gradient(low="yellow", high="blue")+
+theme(legend.position="none")+
+ggtitle("Land surface T (day) in march, 2022")+
+xlab(" ")+
+ylab(" ")
+
+lst_apr01_class <- unsuperClass(lst_apr01_nig, nClasses=2)
+lst_apr01_class
+# 1 colder area
+# 2 warmer area
+
+plot(lst_apr01_class$map)
+freq(lst_apr01_class$map)
+#    value count
+#[1,]  1   12811  colder area
+#[2,]  2   6389  warmer area
+
+lst_apr10_class <- unsuperClass(lst_apr10_nig, nClasses=2)
+plot(lst_apr10_class$map)
+freq(lst_apr10_class$map)
+#     value count
+#[1,]     1  12782
+#[2,]     2  6418
+
+
+lst_mar22_class <- unsuperClass(lst_mar22_nig, nClasses=2)
+plot(lst_mar22_class$map)
+freq(lst_mar22_class$map)
+#      value count
+#[1,]     1   11031
+#[2,]     2   8169
+
+#proportion
+total <- 12811+6389
+cold_a_01 <- 12811/total
+warm_a_01 <- 6389/total
+cold_a_10 <- 12782/total
+warm_a_10 <- 6418/total
+cold_a_22 <- 11031/total
+warm_a_22 <- 8169/total
+
+#build a dataframe
+temp <- ("Cold", "Warm")
+prop01 <- (cold_a_01, warm_a_01)
+prop10 <- (cold_a_10, warm_a_10)
+prop22 <- (cold_a_22, warm_a_22)
+
+
+
+https://nigeria.opendataforafrica.org/
 
 
